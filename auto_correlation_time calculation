@@ -1,0 +1,49 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Wed Dec 26 19:20:19 2018
+
+@author: wrm
+"""
+import numpy as np
+import pandas as pd
+#import ma
+
+dataset=pd.read_excel("C:/Users/wrm/Desktop/dataset.xlsx")
+trace=(dataset["ok"].tolist())
+
+"""
+The calculation of auto-corrleation time
+"""
+mean_trace=np.mean(trace)
+std_trace=np.std(trace)
+length_trace=len(trace)
+
+trace_new=trace-mean_trace
+
+def auto_cot(k):
+    first_part=(length_trace-k)*std_trace*std_trace
+    sub_ans=0
+    for i in range(length_trace-k-1):
+        sub_ans+=trace_new[i]*trace_new[i+k]
+    return (sub_ans/first_part)
+
+for i in range(1000):
+    if (auto_cot(i)<=0):
+        print (i)
+        break
+
+"""
+We find that the cutoff point is i=62
+"""
+fin_ans=0
+for i in range(52):
+    fin_ans=fin_ans+auto_cot(i)
+print (2*fin_ans+1)
+
+
+"""
+x=[i for i in range(1000)]
+y=list(map(auto_cot,x))
+print (x)
+print (y)
+"""
